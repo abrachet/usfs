@@ -10,6 +10,7 @@
 #include <sys/mman.h>
 #include <sys/resource.h>
 
+// TODO: size will not be shared so it will be unsafe to grow the list.
 struct vector {
     size_t size;
     struct filedes *files;
@@ -29,21 +30,8 @@ __CTOR static void init_fd_vec() {
     fd_vec.size = max_fd.rlim_cur;
 }
 
-#ifdef USFS_CLEANUP
-__DTOR static void fd_table_cleanup() {
-    if (fd_vec.files) munmap(fd_vec.files, fd_vec.size);
-}
-#endif
-
-// This will almost always fail.
 static int grow_vec() {
-    struct rlimit max_fd;
-    getrlimit(RLIMIT_NOFILE, &max_fd);
-    void *addr = mmap(fd_vec.files, max_fd.rlim_max, PROT_READ | PROT_WRITE,
-                      MAP_SHARED | MAP_ANON | MAP_FIXED, 0, 0);
-    if (addr == MAP_FAILED) return -EMFILE;
-    fd_vec.files = addr;
-    return 0;
+    return -EMFILE;
 }
 
 static inline int insert_fd(int fd, int flags, char *lib) {
