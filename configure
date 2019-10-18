@@ -93,6 +93,3 @@ echo LIBDIR = ${libdir} 1>&3
 
 if test $incdir = no ; then incdir="/usr/local/include/" ; fi
 echo INCDIR = ${incdir} 1>&3
-
-
-
