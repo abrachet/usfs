@@ -61,7 +61,8 @@ void *hashtable_get(struct hashtable *hashtable, const void *key) {
 void hashtable_remove(struct hashtable *hashtable, const void *key) {
     assert(hashtable);
     struct node_loc loc = find_node(hashtable, key);
-    if (!loc.found) return;
+    if (!loc.found)
+        return;
     if (loc.prev)
         loc.prev->next = loc.found->next;
     else
@@ -74,7 +75,8 @@ void hashtable_remove(struct hashtable *hashtable, const void *key) {
 
 static void free_list(struct node *head, destructor_t kdtor,
                       destructor_t vdtor) {
-    if (!head) return;
+    if (!head)
+        return;
 
     free_list(head->next, kdtor, vdtor);
     kdtor(head->entry.key);

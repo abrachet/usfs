@@ -30,13 +30,12 @@ __CTOR static void init_fd_vec() {
     fd_vec.size = max_fd.rlim_cur;
 }
 
-static int grow_vec() {
-    return -EMFILE;
-}
+static int grow_vec() { return -EMFILE; }
 
 static inline int insert_fd(int fd, int flags, char *lib) {
     int err;
-    if (fd >= fd_vec.size && (err = grow_vec())) return err;
+    if (fd >= fd_vec.size && (err = grow_vec()))
+        return err;
     if (atomic_load(&fd_vec.files[fd].ref_count)) {
         error("fd %d is already being referenced\n", fd);
         return -EBADF;
@@ -79,7 +78,8 @@ int remove_ref(int fd) {
 
     if (atomic_fetch_sub(&fd_vec.files[fd].ref_count, 1) == 1) {
         char *path = fd_vec.files[fd].path_to_lib;
-        if (path) free(path);
+        if (path)
+            free(path);
         fd_vec.files[fd].path_to_lib = 0;
         fd_vec.files[fd].flags = 0;
     }

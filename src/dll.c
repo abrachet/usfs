@@ -38,7 +38,8 @@ void *get_symbol(const char *dll_path, const char *sym) {
 static struct fs_provider *providers;
 
 const char *find_lib(const char *filename) {
-    if (!providers) providers = get_providers();
+    if (!providers)
+        providers = get_providers();
 #else
 const char *find_lib(const char *filename) {
     struct fs_provider *providers = get_providers();
@@ -56,7 +57,8 @@ const char *find_lib(const char *filename) {
                 providers[i].dylib_path);
             return 0;
         }
-        if (accept_fn(filename)) return providers[i].dylib_path;
+        if (accept_fn(filename))
+            return providers[i].dylib_path;
     }
     return 0;
 }
@@ -65,7 +67,8 @@ const char *find_lib(const char *filename) {
 __DTOR static void dll_cleanup() {
     hashtable_destroy(&openlibs);
 #ifndef USFS_REREAD_ENV
-    if (providers) free(providers)
+    if (providers)
+        free(providers)
 #endif
 }
 #endif

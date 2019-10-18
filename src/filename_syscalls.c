@@ -1,8 +1,8 @@
 
-#include "usfs/fdtable.h"
-#include "usfs/syscall.h"
 #include "usfs/dll.h"
+#include "usfs/fdtable.h"
 #include "usfs/log.h"
+#include "usfs/syscall.h"
 #include <fcntl.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -13,9 +13,11 @@ struct sym_and_path {
     char *dylib_path;
 };
 
-static struct sym_and_path try_entry_point(const char *filename, const char *sym) {
+static struct sym_and_path try_entry_point(const char *filename,
+                                           const char *sym) {
     const char *lib_path = find_lib(filename);
-    if (!lib_path) return (struct sym_and_path){0};
+    if (!lib_path)
+        return (struct sym_and_path){0};
     void *found_sym = get_symbol(lib_path, sym);
     if (!found_sym) {
         warn("Shared object: '%s' doesn't export function '%s'\n", lib_path,

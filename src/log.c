@@ -24,7 +24,8 @@ static enum etype error_severity =
 
 __CTOR static void find_error_action() {
     const char *action = getenv("USFS_ERROR");
-    if (!action) return;
+    if (!action)
+        return;
 
     if (!strcasecmp(action, "die"))
         error_severity = Die;
@@ -60,11 +61,13 @@ __CTOR static void open_streams() {
                  tm->tm_sec);
 
     usfs_log = fopen(stderr_path, "a");
-    if (log_dir) free(stderr_path);
+    if (log_dir)
+        free(stderr_path);
 }
 
 static int _log(enum etype severity, const char *restrict fmt, va_list ap) {
-    if (severity == None) return 0;
+    if (severity == None)
+        return 0;
 
     if (severity == Die) {
         int ret = fprintf(stderr, "\033[31mUSFS Fatal Error: \033[0m");
