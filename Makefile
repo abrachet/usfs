@@ -1,13 +1,12 @@
 # Part of USFS
-# Alex Brachet 
+# Alex Brachet
+
 SRCS = src/syscall.c $(wildcard src/*.c) src/syscall.c 
 
 HEADERS = $(wildcard include/usfs/*.h)
 
 DEFINES =
 CFLAGS = -fPIC -Wall -Wvla -Wno-unused-function -Wextra -Wno-sign-compare
-
-
 
 include config.mak
 
@@ -17,7 +16,7 @@ export OBJS
 all: usfs.so
 
 src/syscall.c include/usfs/syscall.h: utils/syscalls.py
-	./utils/make_syscall_files include/usfs/syscall.h src/syscall.c
+	@./utils/make_syscall_files include/usfs/syscall.h src/syscall.c
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@ -Iinclude
@@ -33,16 +32,16 @@ usfs.so: $(OBJS)
 
 FMT := $(SRCS:%.c=%.clang_format)
 %.clang_format: %.c 
-	clang-format -i $<
+	@clang-format -i $<
 format: $(FMT)
 
 install: usfs.so
-	cp usfs.so $(LIBDIR)/usfs.so
+	@cp usfs.so $(LIBDIR)/usfs.so
+	@echo "Add this to your shell's rc file: "export LD_PRELOAD=$(LIBDIR)/usfs.so"
 
 clean:
 	rm -rf $(OBJS)
 	rm -rf *.dSYM
 	rm -rf utils/*.pyc
 	rm -rf include/usfs/syscall.h src/syscall.c
-	$
 	$(MAKE) -C test/ clean
